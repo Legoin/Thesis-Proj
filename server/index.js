@@ -1,8 +1,16 @@
 const express = require('express');
 const path = require('path');
+const expressGraphQL = require('express-graphql');
+const schema = require('../db/index');
 const app = express();
 
-// app.get('/', (req, res) => res.send('API Running'));
+app.use(
+  '/graphql',
+  expressGraphQL({
+    schema: schema,
+    graphiql: true,
+  })
+);
 
 const PORT = process.env.PORT || 5000;
 
