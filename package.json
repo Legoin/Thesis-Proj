@@ -25,7 +25,9 @@
     "express": "^4.17.1",
     "express-graphql": "^0.11.0",
     "graphql": "^15.3.0",
-    "mongoose": "^5.9.25"
+    "knex": "^0.21.2",
+    "mongoose": "^5.9.25",
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
     "concurrently": "^5.2.0",

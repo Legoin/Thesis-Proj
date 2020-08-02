@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const expressGraphQL = require('express-graphql');
+const expressGraphQL = require('express-graphql').graphqlHTTP;
 const schema = require('../db/index');
 const app = express();
 
