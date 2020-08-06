@@ -8,10 +8,9 @@ const {
   GraphQLBoolean,
   GraphQLID,
 } = require('graphql');
-
-const knex = require('./database');
-
+const knex = require('../database/index');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const UserType = new GraphQLObjectType({
   name: 'user',
@@ -25,6 +24,7 @@ const UserType = new GraphQLObjectType({
     service_name: { type: GraphQLString },
     location: { type: GraphQLString },
     address: { type: GraphQLString },
+    token: { type: GraphQLString }
   }),
 });
 
@@ -86,14 +86,14 @@ const RootQuery = new GraphQLObjectType({
         return await knex('User').select().where({ id: args.id }).first();
       },
     },
-    users: {
+    getUsers: {
       type: new GraphQLList(UserType),
       async resolve(root, args) {
         return await knex('User').select();
       },
     },
-    cart: {
-      type: CartType,
+    carts: {
+      type: new GraphQLList(CartType),
       args: {
         // what we need as an arguments
         userID: { type: new GraphQLNonNull(GraphQLID) },
@@ -101,24 +101,33 @@ const RootQuery = new GraphQLObjectType({
       async resolve(root, args) {
         return await knex('Cart')
           .select()
-          .where({ userID: args.userID })
-          .first();
+          .where({ userID: args.userID, sold: false });
       },
     },
-    product: {
-      type: ProductType,
+    productsByUserID: {
+      type: new GraphQLList(ProductType),
       args: {
         userID: { type: new GraphQLNonNull(GraphQLID) },
       },
       async resolve(root, args) {
         return await knex('Product')
           .select()
-          .where({ userID: args.userID })
-          .first();
+          .where({ userID: args.userID }).limit(50);
       },
     },
-    comment: {
-      type: CommentType,
+    productsByCategory: {
+      type: new GraphQLList(ProductType),
+      args: {
+        category: { type: new GraphQLNonNull(GraphQLString) },
+      },
+      async resolve(root, args) {
+        return await knex('Product')
+          .select()
+          .where({ category: args.category }).limit(50);
+      },
+    },
+    comments: {
+      type:  new GraphQLList(CommentType),
       args: {
         postID: { type: new GraphQLNonNull(GraphQLID) },
       },
@@ -126,11 +135,10 @@ const RootQuery = new GraphQLObjectType({
         return await knex('Comment')
           .select()
           .where({ postID: args.postID })
-          .first();
       },
     },
-    post: {
-      type: PostType,
+    posts: {
+      type: new GraphQLList(PostType),
       args: {
         userID: { type: new GraphQLNonNull(GraphQLID) },
       },
@@ -138,9 +146,36 @@ const RootQuery = new GraphQLObjectType({
         return await knex('Post')
           .select()
           .where({ userID: args.userID })
-          .first();
       },
     },
+    login: {
+      type: UserType,
+      args: {
+        username: { type: new GraphQLNonNull(GraphQLString) },
+        password: { type: new GraphQLNonNull(GraphQLString) }
+      },
+      async resolve(root, args) {
+        try{
+          const currentUser = await knex('User').select().where({username : args.username}).first();
+          const passwordCorrect = await bcrypt.compare(args.password, currentUser.password);
+          if(passwordCorrect){
+            const token = jwt.sign({id: currentUser.id, username: currentUser.username}, process.env.SECRET, {
+              algorithm: 'HS256',
+              expiresIn: "2d"
+            }, async (err, data) => {
+              if(err){
+                console.log(err);
+                return;
+              }
+              await knex('User').where({ id: currentUser.id }).update({token: data});
+            });            
+            return currentUser;
+          }
+        }catch{           
+           return "Failed to Login";           
+        }
+      },
+    }
   },
 });
 

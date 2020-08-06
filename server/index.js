@@ -1,15 +1,26 @@
 const express = require('express');
-const path = require('path');
 const expressGraphQL = require('express-graphql').graphqlHTTP;
-const schema = require('../db/index');
+const schema = require('./schema');
+const jwt = require('express-jwt');
 const app = express();
+const path = require('path');
+
+app.use(express.json());
+
+const authMiddleware = jwt({
+  algorithms: ['HS256'],
+  secret: process.env.SECRET,
+});
 
 app.use(
-  '/graphql',
-  expressGraphQL({
-    schema: schema,
+  '/api',
+  expressGraphQL((req) => ({
+    schema,
+    context: {
+      user: req.user,
+    },
     graphiql: true,
-  })
+  }))
 );
 
 const PORT = process.env.PORT || 5000;
