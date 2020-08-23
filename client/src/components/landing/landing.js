@@ -25,6 +25,7 @@ import Navbar from '../mainComp/navbar';
 import Footer from '../footer/footer';
 import Constants from '../constants/Queries';
 import $ from 'jquery';
+import Loading from '../mainComp/loading';
 
 class Landing extends React.Component {
   state = {
@@ -158,6 +159,7 @@ class Landing extends React.Component {
 
     return (
       <div className='landing'>
+        <Loading />
         <Navbar provider={this.state.user} />
         {/* Start Header */}
         <header>
@@ -302,7 +304,7 @@ class Landing extends React.Component {
 
         <div className='popular-palces'>
           <Container>
-            <h2>Popular Palces</h2>
+            <h2>Popular Places</h2>
             <hr className='landing-hr' />
             <p>
               Mauris ac maximus neque. Nam in mauris quis libero sodales
