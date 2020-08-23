@@ -1,11 +1,13 @@
 const express = require('express');
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 const schema = require('./schema');
+const path = require('path');
 const jwt = require('express-jwt');
 const app = express();
-const path = require('path');
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors());
 
 const authMiddleware = jwt({
   algorithms: ['HS256'],
@@ -13,7 +15,7 @@ const authMiddleware = jwt({
 });
 
 app.use(
-  '/api',
+  '/api', // authMiddleware,
   expressGraphQL((req) => ({
     schema,
     context: {
@@ -22,8 +24,6 @@ app.use(
     graphiql: true,
   }))
 );
-
-const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
@@ -34,4 +34,5 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

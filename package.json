@@ -1,39 +1,38 @@
 {
-  "name": "deploybank",
+  "name": "AWS-Thesis-Proj",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server",
     "server": "nodemon server",
-    "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "node server",
+    "build": "cd client && npm i && npm run build",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/IbrahemAtef/deployBank.git"
+    "url": "git+https://github.com/Legoin/AWS-Thesis-Proj.git"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/IbrahemAtef/deployBank/issues"
+    "url": "https://github.com/Legoin/AWS-Thesis-Proj/issues"
   },
-  "homepage": "https://github.com/IbrahemAtef/deployBank#readme",
+  "homepage": "https://github.com/Legoin/AWS-Thesis-Proj#readme",
   "dependencies": {
     "axios": "^0.19.2",
     "bcrypt": "^5.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.11.0",
     "express-jwt": "^6.0.0",
+    "google-map-react": "^2.0.8",
     "graphql": "^15.3.0",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.2",
-    "mongoose": "^5.9.25",
-    "mysql": "^2.18.1"
-  },
-  "devDependencies": {
-    "concurrently": "^5.2.0",
+    "mysql": "^2.18.1",
     "nodemon": "^2.0.4"
   }
 }
