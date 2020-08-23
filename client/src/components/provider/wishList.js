@@ -6,6 +6,7 @@ import Constants from '../constants/Queries';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Redirect } from 'react-router-dom';
+import Loading from '../mainComp/loading';
 
 class WishList extends React.Component {
   state = {
@@ -36,11 +37,12 @@ class WishList extends React.Component {
     }
     return (
       <div className='wish-list'>
+        <Loading />
         <Navbar provider={this.state.user} />
         <div className='clear'></div>
         <Container>
           <div className='wish-list-content'>
-            <div className='list-item'>
+            {/* <div className='list-item'>
               <div className='item-img'>
                 <img src={require(`../../images/29.jpg`)} alt='Item Picture' />
               </div>
@@ -51,10 +53,10 @@ class WishList extends React.Component {
               <div className='item-options'>
                 <FontAwesomeIcon icon={faTrashAlt} />
               </div>
-            </div>
+            </div> */}
           </div>
           <div className='wish-list-sidebar'>
-            <img src={require(`../../images/ads2.png`)} alt="Ads Photo" />
+            <img src={require(`../../images/ads2.jpg`)} alt="Ads Photo" />
           </div>
         </Container>
         <div className='clear'></div>
